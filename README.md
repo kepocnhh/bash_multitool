@@ -1,7 +1,7 @@
 # bash_multitool
 A set of tools for working with software.
 
-![version](https://img.shields.io/static/v1?label=version&message=0.3.0&labelColor=212121&color=2962ff&style=flat)
+![version](https://img.shields.io/static/v1?label=version&message=0.3.1&labelColor=212121&color=2962ff&style=flat)
 
 ## java / lib
 
