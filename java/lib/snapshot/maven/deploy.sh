@@ -2,7 +2,7 @@
 
 . snapshot/check.sh
 . snapshot/maven/assemble.sh
-. unstable/maven/assemble/metadata.sh
+. snapshot/maven/assemble/metadata.sh
 
 ISSUER='lib/build/yml/maven-metadata.yml'
 if [[ ! -f "$ISSUER" ]]; then echo "File \"$ISSUER\" does not exist!"; exit 1
