@@ -9,7 +9,7 @@ gradle clean && \
 if test $? -ne 0; then
  echo "Assemble \"$VARIANT\" error!"; exit 1; fi
 
-ISSUER="lib/build/yml/metadata.yml"
+ISSUER='lib/build/yml/metadata.yml'
 if [[ ! -f "$ISSUER" ]]; then echo "File \"$ISSUER\" does not exist!"; exit 1
 elif [[ ! -s "$ISSUER" ]]; then echo "File \"$ISSUER\" is empty!"; exit 1; fi
 REPOSITORY_OWNER="$(yq -erM .repository.owner "$ISSUER")" || exit 1
@@ -21,7 +21,7 @@ if [[ ! -f "$ISSUER" ]]; then echo "File \"$ISSUER\" does not exist!"; exit 1
 elif [[ ! -s "$ISSUER" ]]; then echo "File \"$ISSUER\" is empty!"; exit 1; fi
 
 IMAGE='kepocnhh/gradle-arm64v8:7.6.1'
-CONTAINER="doc.container"
+CONTAINER="doc.${VARIANT}.container"
 
 for it in REPOSITORY_OWNER REPOSITORY_NAME; do
  if test -z "${!it}"; then echo "Argument \"$it\" is empty!"; exit 1; fi; done
@@ -29,17 +29,17 @@ for it in REPOSITORY_OWNER REPOSITORY_NAME; do
 docker stop "$CONTAINER"
 docker rm "$CONTAINER"
 
-echo "Enter VCS token:"
+echo 'Enter VCS token:'
 read -rs VCS_PAT
 
 docker run -id --name "$CONTAINER" "$IMAGE"
 
 if test $? -ne 0; then
- echo "Run error!"; exit 1; fi
+ echo 'Run error!'; exit 1; fi
 
 GITHUB_USER="$(curl -f 'https://api.github.com/user' -H "Authorization: token $VCS_PAT")"
-if test $? -ne 0; then echo "Get user error!"; exit 1
-elif test -z "$GITHUB_USER"; then echo "User is empty!"; exit 1; fi
+if test $? -ne 0; then echo 'Get user error!'; exit 1
+elif test -z "$GITHUB_USER"; then echo 'User is empty!'; exit 1; fi
 
 USER_NAME="$(echo "$GITHUB_USER" | yq -erM .name)" || exit 1
 USER_ID="$(echo "$GITHUB_USER" | yq -erM .id)" || exit 1
@@ -52,7 +52,7 @@ for it in USER_NAME USER_EMAIL; do
 docker exec "$CONTAINER" mkdir -p "/$REPOSITORY_OWNER/$REPOSITORY_NAME/doc"
 
 if test $? -ne 0; then
- echo "Make dir error!"; exit 1; fi
+ echo 'Make dir error!'; exit 1; fi
 
 for it in \
  'git init' \
@@ -60,7 +60,7 @@ for it in \
  'git fetch --depth=1 origin gh-pages' \
  'git checkout gh-pages'; do
  docker exec -w "/$REPOSITORY_OWNER/$REPOSITORY_NAME" "$CONTAINER" bash -c "$it"
- if test $? -ne 0; then echo "Checkout error!"; exit 1; fi
+ if test $? -ne 0; then echo 'Checkout error!'; exit 1; fi
 done
 
 docker exec -w "/$REPOSITORY_OWNER/$REPOSITORY_NAME" "$CONTAINER" \
@@ -79,7 +79,7 @@ done
 docker cp "lib/build/documentation/$VARIANT" "$CONTAINER:/$REPOSITORY_OWNER/$REPOSITORY_NAME/doc/$VERSION"
 
 if test $? -ne 0; then
- echo "Copy error!"; exit 1; fi
+ echo 'Copy error!'; exit 1; fi
 
 for it in \
  'git add --all .' \
