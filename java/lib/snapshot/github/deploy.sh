@@ -2,8 +2,9 @@
 
 . snapshot/check.sh
 . snapshot/github/assemble.sh
+. snapshot/maven/assemble/metadata.sh
 
-ISSUER="lib/build/yml/metadata.yml"
+ISSUER='lib/build/yml/metadata.yml'
 if [[ ! -f "$ISSUER" ]]; then echo "File \"$ISSUER\" does not exist!"; exit 1
 elif [[ ! -s "$ISSUER" ]]; then echo "File \"$ISSUER\" is empty!"; exit 1; fi
 REPOSITORY_OWNER="$(yq -erM .repository.owner "$ISSUER")" || exit 1
@@ -13,14 +14,17 @@ VERSION="$(yq -erM .version "$ISSUER")" || exit 1
 for it in REPOSITORY_OWNER REPOSITORY_NAME VERSION; do
  if test -z "${!it}"; then echo "Argument \"$it\" is empty!"; exit 1; fi; done
 
-ISSUER="lib/build/xml/maven-metadata.xml"
+ISSUER='lib/build/yml/maven-metadata.yml'
 if [[ ! -f "$ISSUER" ]]; then echo "File \"$ISSUER\" does not exist!"; exit 1
 elif [[ ! -s "$ISSUER" ]]; then echo "File \"$ISSUER\" is empty!"; exit 1; fi
-GROUP_ID="$(yq -p=xml -o=xml -e .metadata.groupId "$ISSUER")" || exit 1
-ARTIFACT_ID="$(yq -p=xml -o=xml -e .metadata.artifactId "$ISSUER")" || exit 1
+GROUP_ID="$(yq -e .repository.groupId "$ISSUER")" || exit 1
+ARTIFACT_ID="$(yq -e .repository.artifactId "$ISSUER")" || exit 1
 
 for it in GROUP_ID ARTIFACT_ID; do
  if test -z "${!it}"; then echo "Argument \"$it\" is empty!"; exit 1; fi; done
+
+if test "$VERSION" != "$(yq -e .version "$ISSUER")"; then
+ echo "Version error!"; exit 1; fi
 
 echo "Enter keystore path:"
 read -e KEYSTORE
