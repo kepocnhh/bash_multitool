@@ -28,7 +28,7 @@ mkdir 'lib/build/xml'
 echo "$MAVEN_METADATA_REMOTE" \
  | yq -p=xml -o=json "${MAVEN_VERSIONS_PATH} |= ([] + .)" \
  | yq -o=json "${MAVEN_VERSIONS_PATH} += \"$VERSION\"" \
- | yq -p=json -o=xml ".metadata.versioning.lastUpdated = \"$(date +%Y%m%d%H%M%S)\"" \
+ | yq -p=json -o=xml ".metadata.versioning.lastUpdated = \"$(date -u +%Y%m%d%H%M%S)\"" \
  > "$ISSUER"
 
 if [[ ! -f "$ISSUER" ]]; then echo "File \"$ISSUER\" does not exist!"; exit 1
