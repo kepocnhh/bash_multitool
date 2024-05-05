@@ -21,8 +21,7 @@ KEYSTORE="$(echo "echo $KEYSTORE" | bash)"
 echo "Enter keystore password:"
 read -rs KEYSTORE_PASSWORD
 
-echo "Enter key alias:"
-read KEY_ALIAS
+KEY_ALIAS='debug'
 
 for it in KEYSTORE KEYSTORE_PASSWORD KEY_ALIAS; do
  if test -z "${!it}"; then echo "Argument \"$it\" is empty!"; exit 1; fi; done
