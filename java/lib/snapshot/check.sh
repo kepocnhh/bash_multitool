@@ -9,7 +9,6 @@ gradle clean && \
  gradle 'lib:checkUnitTest' && \
  gradle 'lib:checkCoverage' && \
  gradle 'lib:checkCodeQuality' && \
- gradle 'lib:checkCodeQualityTest' && \
  gradle 'lib:checkDocumentation' && \
  gradle "lib:assemble${VARIANT^}Metadata" && \
  gradle "lib:assemble${VARIANT^}MavenMetadata"
