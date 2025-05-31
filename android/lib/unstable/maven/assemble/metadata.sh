@@ -28,10 +28,12 @@ MAVEN_VERSIONS_PATH='.metadata.versioning.versions.version'
 
 ISSUER="lib/build/maven/${VARIANT}/maven-metadata.xml"
 
+DATE_NOW="$(date -u +%Y%m%d%H%M%S)"
+
 echo "$MAVEN_METADATA_REMOTE" \
  | yq -p=xml -o=json "${MAVEN_VERSIONS_PATH} |= ([] + .)" \
  | yq -o=json "${MAVEN_VERSIONS_PATH} += \"$VERSION\"" \
- | yq -p=json -o=xml ".metadata.versioning.lastUpdated = \"$(date -u +%Y%m%d%H%M%S)\"" \
+ | yq -p=json -o=xml ".metadata.versioning.lastUpdated = \"$DATE_NOW\" | .metadata.versioning.latest = \"$VERSION\"" \
  > "$ISSUER"
 
 if [[ ! -f "$ISSUER" ]]; then echo "File \"$ISSUER\" does not exist!"; exit 1
